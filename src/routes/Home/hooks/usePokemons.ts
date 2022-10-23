@@ -16,27 +16,32 @@ export function usePokemons({setPokemons}: IUsePokemonsProps) {
   async function getPokemons(route = pagination.next) {
     try {
       const response = await api.get(route);
-      const {results, next, previous} = response.data;
 
-      const formattedPokemons: IPokemon[] = [];
+      if (response) {
+        const {results, next, previous} = response.data;
 
-      const requests = results.map((poke: any) => axios.get(poke.url));
-      await axios.all(requests).then(
-        axios.spread((...spread: any[]) => {
-          spread.forEach(res => {
-            formattedPokemons.push({
-              name: res.data.name,
-              url: res.data.sprites.front_default,
+        const formattedPokemons: IPokemon[] = [];
+
+        const requests = results.map((poke: any) => axios.get(poke.url));
+        await axios.all(requests).then(
+          axios.spread((...spread: any[]) => {
+            spread.forEach(res => {
+              if (res.data) {
+                formattedPokemons.push({
+                  name: res.data.name,
+                  url: res.data.sprites.front_default,
+                });
+              }
             });
-          });
-        }),
-      );
+          }),
+        );
 
-      setPokemons(formattedPokemons);
-      setPagination({
-        next,
-        previous,
-      });
+        setPokemons(formattedPokemons);
+        setPagination({
+          next,
+          previous,
+        });
+      }
     } catch (err) {
       console.log(err);
     }

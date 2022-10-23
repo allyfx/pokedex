@@ -9,7 +9,7 @@ interface IPokemonCardProps {
 function PokemonCard({pokemon}: IPokemonCardProps) {
   return (
     <Container>
-      <Image source={{uri: pokemon.url}} />
+      <Image testID="pokemon-avatar" source={{uri: pokemon.url}} />
 
       <Title>{pokemon.name}</Title>
     </Container>
